@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="uk">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width,initial-scale=1"
+    >
+
+    <title>Svart</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<div
+    id="auth"
+    class="auth"
+>
+
+    <div class="auth-card">
+
+        <div class="logo">
+            СВАРТ<span>ПЛЮС</span>
+        </div>
+
+
+        <h1 id="authTitle">
+            Вхід у систему
+        </h1>
+
+
+        <p id="authSub">
+            Робочий кабінет та облік виробітку
+        </p>
+
+
+        <form id="authForm">
+
+            <div
+                id="nameWrap"
+                class="hidden"
+            >
+
+                <label>
+                    Ім'я та прізвище
+                </label>
+
+                <input
+                    id="name"
+                    placeholder="Іван Петренко"
+                >
+
+            </div>
+
+
+            <label>
+                Логін
+            </label>
+
+            <input
+                id="login"
+                required
+                placeholder="ivan"
+            >
+
+
+            <label>
+                Пароль
+            </label>
+
+            <input
+                id="password"
+                type="password"
+                required
+                placeholder="••••••••"
+            >
+
+
+            <button
+                class="primary"
+                type="submit"
+                id="authBtn"
+            >
+                Увійти
+            </button>
+
+        </form>
+
+
+        <button
+            class="link"
+            id="toggleAuth"
+            type="button"
+        >
+            Немає акаунта? Зареєструватися
+        </button>
+
+
+        <div class="demo">
+
+            Головний адміністратор:
+            <b>
+                admin / admin123
+            </b>
+
+            <br>
+
+            Демо працівника:
+            <b>
+                ivan / 123456
+            </b>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div
+    id="app"
+    class="hidden"
+>
+
+
+<header>
+
+    <div class="logo">
+        СВАРТ<span>ПЛЮС</span>
+    </div>
+
+
+    <div class="userbar">
+
+        <span id="who"></span>
+
+
+        <button
+            class="logout"
+            type="button"
+            onclick="logout()"
+        >
+            Вийти
+        </button>
+
+    </div>
+
+</header>
+
+
+<div class="layout">
+
+
+<aside>
+
+    <button
+        class="nav active"
+        data-page="dashboard"
+        type="button"
+    >
+        📊 Дашборд
+    </button>
+
+
+    <button
+        class="nav"
+        data-page="reports"
+        type="button"
+    >
+        📝 Мої звіти
+    </button>
+
+
+    <button
+        class="nav adminOnly"
+        data-page="employees"
+        type="button"
+    >
+        👥 Працівники
+    </button>
+
+
+    <button
+        class="nav adminOnly"
+        data-page="allReports"
+        type="button"
+    >
+        📋 Усі звіти
+    </button>
+
+
+    <button
+        class="nav adminOnly"
+        data-page="workTypes"
+        type="button"
+    >
+        ⚙️ Завдання та норми
+    </button>
+
+
+    <button
+        type="button"
+        class="adminOnly excel-button"
+        onclick="exportExcel()"
+    >
+        📥 Завантажити Excel
+    </button>
+
+
+    <button
+        class="nav superAdminOnly"
+        data-page="management"
+        type="button"
+    >
+        🔐 Керування доступом
+    </button>
+
+</aside>
+
+
+<main>
+
+
+<section
+    id="dashboard"
+    class="page"
+>
+
+    <div class="heading">
+
+        <div>
+
+            <h1>
+                Дашборд
+            </h1>
+
+            <p>
+                Ваша робоча статистика
+            </p>
+
+        </div>
+
+
+        <button
+            class="primary"
+            type="button"
+            onclick="show('reports')"
+        >
+            + Здати звіт
+        </button>
+
+    </div>
+
+
+    <div class="stats">
+
+        <div>
+
+            <small>
+                Зароблено
+            </small>
+
+            <b id="earnings">
+                0 ₴
+            </b>
+
+        </div>
+
+
+        <div>
+
+            <small>
+                Відпрацьовано
+            </small>
+
+            <b id="hours">
+                0 год
+            </b>
+
+        </div>
+
+
+        <div>
+
+            <small>
+                Здано звітів
+            </small>
+
+            <b id="reportCount">
+                0
+            </b>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>
+            Останні звіти
+        </h2>
+
+        <div id="dashTable"></div>
+
+    </div>
+
+</section>
+
+
+<section
+    id="reports"
+    class="page hidden"
+>
+
+    <div class="heading">
+
+        <div>
+
+            <h1>
+                Мої звіти
+            </h1>
+
+            <p>
+                Виберіть потрібну кількість завдань
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <form
+            id="reportForm"
+            class="report-form"
+        >
+
+            <label>
+
+                Дата
+
+                <input
+                    id="rdate"
+                    type="date"
+                    required
+                >
+
+            </label>
+
+
+            <div
+                id="reportItems"
+                class="report-items"
+            ></div>
+
+
+            <button
+                type="button"
+                id="addReportItem"
+                class="add-report-button"
+            >
+                + Додати ще завдання
+            </button>
+
+
+            <div
+                id="reportTotal"
+                class="report-total"
+            >
+                Завдань: 0
+            </div>
+
+
+            <button
+                class="primary"
+                type="submit"
+            >
+                Зберегти всі завдання
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>
+            Історія
+        </h2>
+
+        <div id="myTable"></div>
+
+    </div>
+
+</section>
+
+
+<section
+    id="employees"
+    class="page hidden adminPage"
+>
+
+    <div class="heading">
+
+        <div>
+
+            <h1>
+                Працівники
+            </h1>
+
+            <p>
+                Контроль команди та заробітку
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div id="employeesTable"></div>
+
+    </div>
+
+</section>
+
+
+<section
+    id="allReports"
+    class="page hidden adminPage"
+>
+
+    <div class="heading">
+
+        <div>
+
+            <h1>
+                Усі звіти
+            </h1>
+
+            <p>
+                Один рядок — одна здана звітність
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div id="allReportsTable"></div>
+
+    </div>
+
+</section>
+
+
+<section
+    id="workTypes"
+    class="page hidden adminPage"
+>
+
+    <div class="heading">
+
+        <div>
+
+            <h1>
+                Завдання та норми
+            </h1>
+
+            <p>
+                Додавання та видалення завдань
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <form
+            id="workForm"
+            class="form"
+        >
+
+            <label>
+
+                Назва
+
+                <input
+                    id="wname"
+                    required
+                    placeholder="Нове завдання"
+                >
+
+            </label>
+
+
+            <label>
+
+                Норма/год
+
+                <input
+                    id="wnorm"
+                    type="number"
+                    min="1"
+                    step="1"
+                    required
+                    placeholder="20"
+                >
+
+            </label>
+
+
+            <label>
+
+                Ставка/год
+
+                <input
+                    id="wrate"
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    required
+                    placeholder="120"
+                >
+
+            </label>
+
+
+            <div></div>
+
+
+            <button
+                class="primary"
+                type="submit"
+            >
+                Додати завдання
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>
+            Доступні завдання
+        </h2>
+
+        <div id="workTable"></div>
+
+    </div>
+
+</section>
+
+
+<section
+    id="management"
+    class="page hidden adminPage"
+>
+
+    <div class="heading">
+
+        <div>
+
+            <h1>
+                Керування доступом
+            </h1>
+
+            <p>
+                Надання та відкликання прав адміністратора
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>
+            Користувачі
+        </h2>
+
+        <p>
+            Тут головний адміністратор може
+            керувати правами та станом акаунтів.
+        </p>
+
+
+        <div id="managementTable">
+            Завантаження...
+        </div>
+
+    </div>
+
+</section>
+
+
+</main>
+
+</div>
+
+</div>
+
+
+<script src="app.js"></script>
+
+</body>
+
+</html>
