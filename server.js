@@ -2,6 +2,10 @@ const express = require('express');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
 const Database = require('better-sqlite3');
+const SqliteStore =
+    require('better-sqlite3-session-store')(
+        session
+    );
 const ExcelJS = require('exceljs');
 const path = require('path');
 
@@ -42,21 +46,29 @@ app.use(
     })
 );
 
+app.set(
+    'trust proxy',
+    1
+);
+
 app.use(
     session({
-        secret:
-            SESSION_SECRET,
+        store: sessionStore,
 
-        resave:
-            false,
+        secret: SESSION_SECRET,
 
-        saveUninitialized:
-            false,
+        resave: false,
+
+        saveUninitialized: false,
 
         cookie: {
             httpOnly: true,
             sameSite: 'lax',
-            secure: false,
+
+            secure:
+                process.env.NODE_ENV ===
+                'production',
+
             maxAge:
                 1000 *
                 60 *
